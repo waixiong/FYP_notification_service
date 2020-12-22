@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+// import "protoc-gen-swagger/options/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/empty.proto";
+
+// option java_multiple_files = true;
+// option java_package = "com.getitqec.mailnotificationproto";
+// option java_outer_classname = "MailNotificationService";
+option go_package = ".;serviceproto";
+
+package mailnotificationproto;
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+	info: {
+		title: "Mail notification service";
+		version: "1.0";
+		contact: {
+			name: "getitqec mail notification service";
+			url: "https://github.com/amsokol/go-grpc-http-rest-microservice-tutorial";
+			email: "medium@amsokol.com";
+        };
+    };
+    schemes: HTTPS;
+    consumes: "application/json";
+    produces: "application/json";
+    responses: {
+		key: "404";
+		value: {
+			description: "Returned when the resource does not exist.";
+			schema: {
+				json_schema: {
+					type: STRING;
+				}
+			}
+		}
+	}
+};
+
+service MailNotificationService {
+    // reuqest response
+    rpc SendNoReplyMail (NoReplyMessage) returns (google.protobuf.Empty) {
+        // option (google.api.http) = {
+        //     post: "/api/map/route"
+        //     body: "*"
+        // };
+    }
+
+    rpc SendToken (MessagingToken) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/api/notification/token"
+            body: "*"
+        };
+    }
+
+    rpc PushToUser (PushRequest) returns (google.protobuf.Empty) {
+        // option (google.api.http) = {
+        //     post: "/api/notification/token"
+        //     body: "*"
+        // };
+    }
+
+    rpc PushNotificationToTopic (PushRequest) returns (google.protobuf.Empty) {
+        // option (google.api.http) = {
+        //     post: "/api/notification/token"
+        //     body: "*"
+        // };
+    }
+}
+
+message NoReplyMessage {
+    string rep_name = 1;
+    string rep_email = 2;
+    string subj = 3;
+    string body = 4;
+}
+
+message MessagingToken {
+    string id = 1;
+    string type = 2;
+    string platform = 3;
+    string token = 4;
+    string domain = 5;
+}
+
+message PushRequest {
+    string domain = 1;
+    string target = 2;
+    bool notification = 3;
+    string title = 4;
+    string body = 5;
+    string imgUrl = 6;
+    map<string, string> data= 7;
+}
