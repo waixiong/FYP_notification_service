@@ -35,25 +35,25 @@ type Server struct {
 func (s *Server) SendNoReplyMail(ctx context.Context, req *pb.NoReplyMessage) (*empty.Empty, error) {
 	// return nil, status.Errorf(codes.Unimplemented, "method SendNoReplyMail not implemented")
 	handler := &handlers.SendNoReplyMailHandler{Model: s.mailModel}
-	return nil, handler.SendNoReplyMail(ctx, req)
+	return &empty.Empty{}, handler.SendNoReplyMail(ctx, req)
 }
 
 func (s *Server) SendToken(ctx context.Context, req *pb.MessagingToken) (*empty.Empty, error) {
 	// return nil, status.Errorf(codes.Unimplemented, "method SendToken not implemented")
 	handler := &handlers.SendTokenHandler{Model: s.notificationModel}
-	return nil, handler.SendToken(ctx, req)
+	return &empty.Empty{}, handler.SendToken(ctx, req)
 }
 
 func (s *Server) PushToUser(ctx context.Context, req *pb.PushRequest) (*empty.Empty, error) {
 	// return nil, status.Errorf(codes.Unimplemented, "method PushNotificationToUser not implemented")
 	handler := &handlers.PushToUserHandler{Model: s.notificationModel}
-	return nil, handler.PushToUser(ctx, req)
+	return &empty.Empty{}, handler.PushToUser(ctx, req)
 }
 
 func (s *Server) PushNotificationToTopic(ctx context.Context, req *pb.PushRequest) (*empty.Empty, error) {
 	// return nil, status.Errorf(codes.Unimplemented, "method PushNotificationToTopic not implemented")
 	handler := &handlers.PushToTopicHandler{Model: s.notificationModel}
-	return nil, handler.PushToTopic(ctx, req)
+	return &empty.Empty{}, handler.PushToTopic(ctx, req)
 }
 
 // NewServer return new auth server service

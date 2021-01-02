@@ -1,2 +1,2 @@
-sudo docker build -t imagechat_mailnotification .
-sudo docker save imagechat_mailnotification > ../images/imagechat_mailnotification.tar
+sudo docker build -t imagechat_notification .
+sudo docker save imagechat_notification > ../images/imagechat_notification.tar

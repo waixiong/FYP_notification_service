@@ -10,7 +10,14 @@ import (
 )
 
 func (m *NotificationModel) SetUserToken(ctx context.Context, domain string, userId string, tokenType string, platform string, token string) error {
-	return m.TokenDAO.Set(ctx, &dto.MessagingToken{Id: userId, Domain: domain, Token: token, Type: tokenType, Platform: platform})
+	fmt.Println("Model SetUserToken")
+	err := m.TokenDAO.Set(ctx, &dto.MessagingToken{Id: userId, Domain: domain, Token: token, Type: tokenType, Platform: platform})
+	if err != nil {
+		fmt.Println("Error here notification.go")
+	} else {
+		fmt.Println("No err from model")
+	}
+	return err
 }
 
 // Push to particular user

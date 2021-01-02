@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 
 	"getitqec.com/server/mailnotification/pkg/commons"
 	"getitqec.com/server/mailnotification/pkg/dto"
@@ -22,12 +23,13 @@ func (v *MessagingTokenDAO) Set(ctx context.Context, token *dto.MessagingToken) 
 	option := options.Find()
 	option = option.SetLimit(1)
 	c, err := v.mongodb.Client().Database(commons.NotificationTable).Collection(commons.MessagingTokenColection).CountDocuments(ctx, bson.D{
-		{Key: "Id", Value: token.Id},
+		{Key: "id", Value: token.Id},
 		{Key: "type", Value: token.Type},
 		{Key: "platform", Value: token.Platform},
 		{Key: "domain", Value: token.Domain},
 	})
 	if err != nil {
+		fmt.Println("Error here DAO set 1")
 		return err
 	}
 	if c == 0 {

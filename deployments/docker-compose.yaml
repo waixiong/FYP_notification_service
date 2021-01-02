@@ -46,7 +46,7 @@ services:
   #   container_name: investhack_grpc
   
   imagechat_mailnotification:
-    image: imagechat_mailnotification
+    image: imagechat_notification
     restart: always
     networks:
       - server
@@ -73,7 +73,7 @@ services:
       - traefik.http.routers.imagechat_mailnotification_grpc.rule=Host(`imagechat.getitqec.com`) && PathPrefix(`/serviceproto.MailNotificationService/`)
       - traefik.http.routers.imagechat_mailnotification_grpc.entrypoints=grpc
       - traefik.http.routers.imagechat_mailnotification_grpc.tls.certresolver=mytlschallenge
-    container_name: imagechat_mailnotification
+    container_name: imagechat_notification
 
 networks:
   server:

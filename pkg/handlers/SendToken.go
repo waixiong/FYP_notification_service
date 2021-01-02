@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 
 	pb "getitqec.com/server/mailnotification/pkg/api/v1"
 	"getitqec.com/server/mailnotification/pkg/commons"
@@ -17,10 +18,13 @@ func (s *SendTokenHandler) SendToken(ctx context.Context, req *pb.MessagingToken
 	// if err != nil {
 	// 	return nil, err
 	// }
+	fmt.Println("Send FCM Token Handler")
 	token, err := commons.VerifyGoogleAccessToken(ctx)
 	if err != nil {
+		fmt.Println("Error found in handler")
 		return err
 	}
+	fmt.Println(token)
 	if token.UserId != req.Id && req.Id != "" {
 		return commons.NotAuthorized
 	}
