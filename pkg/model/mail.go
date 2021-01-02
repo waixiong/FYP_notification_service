@@ -6,17 +6,22 @@ import (
 
 	// "github.com/syndtr/goleveldb/leveldb"
 
+	"bytes"
 	"context"
 	"crypto/tls"
 	"fmt"
+	"html/template"
 	"net"
 	"net/mail"
 	"net/smtp"
+	"os"
+
+	"getitqec.com/server/mailnotification/pkg/commons"
 )
 
 // SendNoReplyMail - Send one email, with html body
 func (m *MailModel) SendNoReplyMail(ctx context.Context, repName string, repAddress string, subj string, body string) error {
-	from := mail.Address{Name: "GetIt", Address: "wx.chee@getitqec.com"}
+	from := mail.Address{Name: os.Getenv("MAIL_NAME"), Address: os.Getenv("MAIL_ADDR")}
 	to := mail.Address{Name: repName, Address: repAddress}
 	// subj := "This is the email subject"
 	// body := "This is an example body.\n With three lines.\nThis email is auth with md5, safer."
@@ -42,7 +47,7 @@ func (m *MailModel) SendNoReplyMail(ctx context.Context, repName string, repAddr
 
 	host, _, _ := net.SplitHostPort(servername)
 
-	auth := smtp.PlainAuth("", from.Address, "q17QrIjrYsAZ", host)
+	auth := smtp.PlainAuth("", from.Address, os.Getenv("MAIL_PASS"), host)
 
 	// TLS config
 	tlsconfig := &tls.Config{
@@ -88,4 +93,35 @@ func (m *MailModel) SendNoReplyMail(ctx context.Context, repName string, repAddr
 	}
 
 	return c.Quit()
+}
+
+func (m *MailModel) SendInvitationMail(ctx context.Context, repName string, repAddress string, inviter string) error {
+	token, err := commons.GetUserInfo(ctx)
+	if err != nil {
+		return err
+	}
+
+	// https://forum.golangbridge.org/t/get-golang-variable-value-in-html-script-tag/5349
+	tmpl, err := template.ParseFiles("./third_party/mail/html/invitation.html")
+	if err != nil {
+		return err
+	}
+
+	data := struct {
+		RepName string
+		Inviter string
+	}{
+		RepName: repName,
+		Inviter: token.Name, //inviter,
+	}
+
+	var htmlBuffer bytes.Buffer
+	err = tmpl.Execute(&htmlBuffer, data)
+	if err != nil {
+		return err
+	}
+
+	return m.SendNoReplyMail(ctx, repName, repAddress, "Invitation to ImageChat", htmlBuffer.String())
+
+	// return nil
 }

@@ -104,6 +104,9 @@ func VerifyGoogleAccessToken(ctx context.Context) (*googleOauth2.Tokeninfo, erro
 		return nil, ErrMissingMetadata
 	}
 	accessTokens := md.Get("Authorization")
+	if len(accessTokens) != 1 {
+		return nil, ErrInvalidToken
+	}
 	fmt.Println(accessTokens)
 
 	oauth2Service, err := googleOauth2.New(httpClient)
@@ -126,4 +129,28 @@ func VerifyGoogleAccessToken(ctx context.Context) (*googleOauth2.Tokeninfo, erro
 		return nil, err
 	}
 	return tokenInfo, nil
+}
+
+func GetUserInfo(ctx context.Context) (*googleOauth2.Userinfo, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	fmt.Printf("\tAuth Func Get metadata...\n")
+	if !ok {
+		return nil, ErrMissingMetadata
+	}
+	accessTokens := md.Get("Authorization")
+	if len(accessTokens) != 1 {
+		return nil, ErrInvalidToken
+	}
+	accessToken := accessTokens[0]
+
+	oauth2Service, err := googleOauth2.New(httpClient)
+	userInfoGetCall := oauth2Service.Userinfo.Get()
+	userInfoGetCall.Header().Add("Authorization", accessToken)
+	userInfoGetCall.Fields()
+	userInfo, err := userInfoGetCall.Do(urlParams{"access_token", accessToken})
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return userInfo, nil
 }

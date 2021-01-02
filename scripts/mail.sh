@@ -1,0 +1,1 @@
+mjml ./third_party/mail/mjml/invitation.mjml -o ./third_party/mail/html/invitation.html

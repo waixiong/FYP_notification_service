@@ -56,6 +56,12 @@ func (s *Server) PushNotificationToTopic(ctx context.Context, req *pb.PushReques
 	return &empty.Empty{}, handler.PushToTopic(ctx, req)
 }
 
+func (s *Server) SendInvitationMail(ctx context.Context, req *pb.InvitationRequest) (*empty.Empty, error) {
+	// return nil, status.Errorf(codes.Unimplemented, "method PushNotificationToTopic not implemented")
+	// handler := &handlers.PushToTopicHandler{Model: s.notificationModel}
+	return &empty.Empty{}, s.mailModel.SendInvitationMail(ctx, req.RepName, req.RepEmail, req.Inviter)
+}
+
 // NewServer return new auth server service
 func NewServer(mmodel model.MailModelI, nmodel model.NotificationModelI) *Server {
 	server := &Server{}

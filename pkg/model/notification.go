@@ -30,6 +30,11 @@ func (m *NotificationModel) PushToUser(ctx context.Context, notification bool, d
 	// 	log.Fatalf("error initializing app: %v\n", err)
 	// }
 
+	_, err := commons.VerifyGoogleAccessToken(ctx)
+	if err != nil {
+		return err
+	}
+
 	// Obtain a messaging.Client from the App.
 	client, err := m.App.Messaging(ctx)
 	if err != nil {

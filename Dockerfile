@@ -27,4 +27,6 @@ EXPOSE 8121
 COPY configs /configs/
 COPY .env .
 
+COPY third_party/mail/html /third_party/mail/html/
+
 CMD ["/cmd/server"]

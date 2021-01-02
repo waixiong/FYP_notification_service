@@ -6,6 +6,8 @@ import (
 
 type MailModelI interface {
 	SendNoReplyMail(ctx context.Context, repName string, repAddress string, subj string, body string) error
+
+	SendInvitationMail(ctx context.Context, repName string, repAddress string, senName string) error
 }
 
 type NotificationModelI interface {

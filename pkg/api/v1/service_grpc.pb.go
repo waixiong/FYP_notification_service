@@ -23,6 +23,7 @@ type MailNotificationServiceClient interface {
 	SendToken(ctx context.Context, in *MessagingToken, opts ...grpc.CallOption) (*empty.Empty, error)
 	PushToUser(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	PushNotificationToTopic(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	SendInvitationMail(ctx context.Context, in *InvitationRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type mailNotificationServiceClient struct {
@@ -69,6 +70,15 @@ func (c *mailNotificationServiceClient) PushNotificationToTopic(ctx context.Cont
 	return out, nil
 }
 
+func (c *mailNotificationServiceClient) SendInvitationMail(ctx context.Context, in *InvitationRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/mailnotificationproto.MailNotificationService/SendInvitationMail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MailNotificationServiceServer is the server API for MailNotificationService service.
 // All implementations must embed UnimplementedMailNotificationServiceServer
 // for forward compatibility
@@ -78,6 +88,7 @@ type MailNotificationServiceServer interface {
 	SendToken(context.Context, *MessagingToken) (*empty.Empty, error)
 	PushToUser(context.Context, *PushRequest) (*empty.Empty, error)
 	PushNotificationToTopic(context.Context, *PushRequest) (*empty.Empty, error)
+	SendInvitationMail(context.Context, *InvitationRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedMailNotificationServiceServer()
 }
 
@@ -96,6 +107,9 @@ func (UnimplementedMailNotificationServiceServer) PushToUser(context.Context, *P
 }
 func (UnimplementedMailNotificationServiceServer) PushNotificationToTopic(context.Context, *PushRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushNotificationToTopic not implemented")
+}
+func (UnimplementedMailNotificationServiceServer) SendInvitationMail(context.Context, *InvitationRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendInvitationMail not implemented")
 }
 func (UnimplementedMailNotificationServiceServer) mustEmbedUnimplementedMailNotificationServiceServer() {
 }
@@ -183,6 +197,24 @@ func _MailNotificationService_PushNotificationToTopic_Handler(srv interface{}, c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MailNotificationService_SendInvitationMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InvitationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MailNotificationServiceServer).SendInvitationMail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mailnotificationproto.MailNotificationService/SendInvitationMail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MailNotificationServiceServer).SendInvitationMail(ctx, req.(*InvitationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _MailNotificationService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "mailnotificationproto.MailNotificationService",
 	HandlerType: (*MailNotificationServiceServer)(nil),
@@ -202,6 +234,10 @@ var _MailNotificationService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PushNotificationToTopic",
 			Handler:    _MailNotificationService_PushNotificationToTopic_Handler,
+		},
+		{
+			MethodName: "SendInvitationMail",
+			Handler:    _MailNotificationService_SendInvitationMail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
